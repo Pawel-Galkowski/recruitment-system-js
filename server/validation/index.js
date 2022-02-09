@@ -1,13 +1,13 @@
-var education = require('./education');
-var experience = require('./experience');
-var isEmpty = require('./is-empty');
-var login = require('./login');
-var post = require('./post');
-var profile = require('./profile');
-var register = require('./register');
-var forms = require('./forms');
+import education from './education.js';
+import experience from './experience.js';
+import isEmpty from './is-empty.js';
+import login from './login.js';
+import post from './post.js';
+import profile from './profile.js';
+import register from './register.js';
+import forms from './forms.js';
 
-module.exports = {
+export default {
   isEmpty,
   login,
   register,

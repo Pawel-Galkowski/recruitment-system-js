@@ -1,9 +1,9 @@
-'use strict';
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config()
 
-async function recoveryMailer(user, secret_key) {
+const recoveryMailer = async(user, secret_key) => {
   try {
     let transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -42,4 +42,4 @@ async function recoveryMailer(user, secret_key) {
   }
 }
 
-module.exports = recoveryMailer;
+export default recoveryMailer;

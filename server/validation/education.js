@@ -1,7 +1,7 @@
-﻿const Validator = require('validator');
-const isEmpty = require('./is-empty');
+﻿import Validator from 'validator';
+import isEmpty from './is-empty';
 
-module.exports = function validateEducationImput(data) {
+export default function validateEducationImput(data) {
   let errors = {};
 
   data.school = !isEmpty(data.school) ? data.school : '';

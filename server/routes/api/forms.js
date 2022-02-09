@@ -1,10 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
+import express from 'express';
+import { check, validationResult } from 'express-validator';
 
-const auth = require('../../middleware/auth');
-const User = require('../../models/User');
-const Form = require('../../models/Form');
+import auth from '../../middleware/auth.js';
+import User from '../../models/User.js';
+import Form from '../../models/Form.js';
+
+
+const router = express.Router();
 
 // @route   Post api/Form
 // @desc    Post company to Form
@@ -405,4 +407,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

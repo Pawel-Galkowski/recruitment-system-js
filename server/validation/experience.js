@@ -1,7 +1,7 @@
-﻿const Validator = require('validator');
-const isEmpty = require('./is-empty');
+﻿import Validator from 'validator';
+import isEmpty from './is-empty';
 
-module.exports = function validateExperienceImput(data) {
+export default function validateExperienceImput(data) {
   let errors = {};
 
   data.title = !isEmpty(data.title) ? data.title : '';

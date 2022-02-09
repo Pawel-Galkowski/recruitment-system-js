@@ -1,14 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const request = require('request');
-const config = require('config');
-const auth = require('../../middleware/auth');
-const { check, validationResult } = require('express-validator/check');
+import express from 'express';
+import request from 'request';
+import config from 'config';
+import auth from '../../middleware/auth.js';
+import { check, validationResult } from 'express-validator';
+import Profile from '../../models/Profile.js';
+import User from '../../models/User.js';
+import Post from '../../models/Post.js';
 
-// Load Models
-const Profile = require('../../models/Profile');
-const User = require('../../models/User');
-const Post = require('../../models/Post');
+const router = express.Router();
 
 // @route   GET api/profile
 // @desc    Get all users profiles
@@ -508,4 +507,4 @@ router.get('/getAllusers', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

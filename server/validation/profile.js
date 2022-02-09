@@ -1,8 +1,8 @@
-﻿const Validator = require('validator');
-const isEmpty = require('./is-empty');
+﻿import Validator from 'validator';
+import isEmpty from './is-empty';
 
-module.exports = function validateProfileImput(data) {
-  let errors = {};
+export default function validateProfileImput(data) {
+  const errors = {};
 
   data.handle = !isEmpty(data.handle) ? data.handle : '';
   data.status = !isEmpty(data.status) ? data.status : '';

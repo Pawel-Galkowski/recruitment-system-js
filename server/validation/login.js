@@ -1,7 +1,7 @@
-﻿const Validator = require('validator');
-const isEmpty = require('./is-empty');
+﻿import Validator from 'validator';
+import isEmpty from './is-empty.js';
 
-module.exports = function validateLoginImput(data) {
+const validateLoginImput = data => {
   let errors = {};
 
   data.email = !isEmpty(data.email) ? data.email : '';
@@ -25,3 +25,5 @@ module.exports = function validateLoginImput(data) {
     isValid: isEmpty(errors),
   };
 };
+
+export default validateLoginImput 

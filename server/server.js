@@ -1,25 +1,24 @@
-﻿'use strict';
-var express = require('express');
-var path = require('path');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const passport = require('passport');
-const fileUpload = require('express-fileupload');
-const users = require('./routes/api/users');
-const auth = require('./routes/api/auth');
-const profile = require('./routes/api/profile');
-const posts = require('./routes/api/posts');
-const forms = require('./routes/api/forms');
-var fs = require('fs');
-require('./middleware/mailer');
+﻿import Express from 'express';
+import path from 'path';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import passport from 'passport';
+import fileUpload from 'express-fileupload';
+import users from './routes/api/users.js';
+import auth from './routes/api/auth.js';
+import profile from './routes/api/profile.js';
+import posts from './routes/api/posts.js';
+import forms from './routes/api/forms.js';
+import fs from 'fs';
+import db from './config/keys.js';
+import './middleware/mailer.js';
+import './config/passport.js';
 
-var app = express();
+const app = Express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
-
-const db = require('./config/keys');
 
 mongoose
   .connect(db.mongoURI, db.options)
@@ -27,9 +26,6 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(passport.initialize());
-
-require('./config/passport')(passport);
-
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/profile', profile);

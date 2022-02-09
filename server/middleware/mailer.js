@@ -1,10 +1,10 @@
-'use strict';
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+dotenv.config()
 
-async function activationMailer(user, secret_key) {
+const activationMailer =  async(user, secret_key) => {
   try {
     let transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -64,4 +64,4 @@ async function activationMailer(user, secret_key) {
   }
 }
 
-module.exports = activationMailer;
+export default activationMailer;

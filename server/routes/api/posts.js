@@ -1,9 +1,10 @@
-﻿const express = require('express');
+﻿import express from 'express';
+import { check, validationResult } from 'express-validator';
+import auth from '../../middleware/auth.js';
+import Post from '../../models/Post.js';
+import User from '../../models/User.js';
+
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
-const auth = require('../../middleware/auth');
-const Post = require('../../models/Post');
-const User = require('../../models/User');
 
 // @route    POST api/posts/
 // @desc     Create a post
@@ -209,4 +210,4 @@ router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

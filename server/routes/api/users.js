@@ -1,17 +1,16 @@
-﻿const express = require('express');
+﻿import express from 'express';
+import gravatar from 'gravatar';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import { check, validationResult } from 'express-validator';
+import keys from '../../config/keys.js';
+import activationMailer from '../../middleware/mailer.js';
+import recoveryMailer from '../../middleware/reMailer.js';
+import validateLoginImput from '../../validation/login.js';
+import User from '../../models/User.js';
+
 const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const keys = require('../../config/keys');
-const passport = require('passport');
-const activationMailer = require('../../middleware/mailer');
-const recoveryMailer = require('../../middleware/reMailer');
-const { check, validationResult } = require('express-validator/check');
-
-const validateLoginImput = require('../../validation/login');
-
-const User = require('../../models/User');
 
 router.post(
   '/',
@@ -190,4 +189,4 @@ router.post('/recovery/:token', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
