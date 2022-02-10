@@ -1,8 +1,8 @@
-﻿import Passport from 'passport-jwt';
+import Passport from 'passport-jwt';
 import mongoose from 'mongoose';
-import keys from './keys.js';
+import keys from './keys';
 
-const { ExtractJwt, JwtStrategy } = Passport
+const { ExtractJwt, JwtStrategy } = Passport;
 
 const User = mongoose.model('users');
 const opts = {};
@@ -11,16 +11,15 @@ opts.secretOrKey = keys.secretOrKey;
 
 export default (params) => {
   params.use(
-    new JwtStrategy(opts, (jwt_payload, done) => {
-      User.findById(jwt_payload.id)
+    new JwtStrategy(opts, (jwtPayload, done) => {
+      User.findById(jwtPayload.id)
         .then((user) => {
           if (user) {
             return done(null, user);
-          } else {
-            return done(null, false);
           }
+          return done(null, false);
         })
         .catch((err) => console.log(err));
-    })
+    }),
   );
 };

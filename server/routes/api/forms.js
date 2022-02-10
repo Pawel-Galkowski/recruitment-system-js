@@ -1,10 +1,9 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 
-import auth from '../../middleware/auth.js';
-import User from '../../models/User.js';
-import Form from '../../models/Form.js';
-
+import auth from '../../middleware/auth';
+import User from '../../models/User';
+import Form from '../../models/Form';
 
 const router = express.Router();
 
@@ -30,19 +29,19 @@ router.post(
       });
 
       if (req.body.admins) {
-        let admins = req.body.admins.slice();
+        const admins = req.body.admins.slice();
         admins.push(user.id);
         newCompany.admins = admins.slice();
       } else newCompany.admins.push(user.id);
 
       const form = await newCompany.save();
 
-      res.json(form);
+      return res.json(form);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   GET api/Form
@@ -101,12 +100,12 @@ router.post(
 
       company.formTable.unshift(newForm);
       await company.save();
-      res.json(company);
+      return res.json(company);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   GET api/Form/:company/:id
@@ -123,10 +122,10 @@ router.get('/:company/:id', auth, async (req, res) => {
       });
     }
 
-    res.json(onceForm);
+    return res.json(onceForm);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -157,12 +156,12 @@ router.post(
 
       onceForm.responses.unshift(newRes);
       await company.save();
-      res.json(onceForm);
+      return res.json(onceForm);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 router.post(
@@ -185,14 +184,14 @@ router.post(
         answer: req.body.responses,
       };
 
-      let res = onceForm.responses.unshift(newRes);
+      const response = onceForm.responses.unshift(newRes);
       await company.updateOne(company);
-      res.json(company);
+      return response.json(company);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   GET api/Form/asks/:company/:id/:asks
@@ -210,10 +209,10 @@ router.get('/asks/:company/:id', auth, async (req, res) => {
       });
     }
 
-    res.json(onceForm.questions);
+    return res.json(onceForm.questions);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -232,10 +231,10 @@ router.get('/res/:company/:id/:res', auth, async (req, res) => {
       });
     }
 
-    res.json(responses);
+    return res.json(responses);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -255,10 +254,10 @@ router.get('/res/:company/:id', auth, async (req, res) => {
       });
     }
 
-    res.json(allRes);
+    return res.json(allRes);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -280,17 +279,17 @@ router.delete('/:company', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not authorized' });
     }
 
-    //Only admins can remove companies
+    // Only admins can remove companies
     // const logged = await User.findById(req.user.id);
     // if (logged.role !== "admin") {
     //   return res.status(404).json({ msg: "User not authorized" });
     // }
 
     await company.remove();
-    res.json([{ msg: 'Company removed' }]);
+    return res.json([{ msg: 'Company removed' }]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -325,10 +324,10 @@ router.delete('/:company/:id', auth, async (req, res) => {
     company.formTable.splice(removeIndex, 1);
 
     await company.save();
-    res.json([{ msg: 'Form removed' }]);
+    return res.json([{ msg: 'Form removed' }]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -339,8 +338,8 @@ router.delete('/:company/:id', auth, async (req, res) => {
 router.delete('/res/:company/:id/:response', auth, async (req, res) => {
   try {
     const company = await Form.findById(req.params.company);
-    const responses = company.formTable.find((ask) => ask.id === req.params.id);
-    const response = responses.responses.find((resp) => resp.id === req.params.response);
+    const resp = company.formTable.find((ask) => ask.id === req.params.id);
+    const response = resp.responses.find((item) => item.id === req.params.response);
     if (!response) {
       return res.status(404).json({
         msg: 'Response does not exist',
@@ -356,16 +355,17 @@ router.delete('/res/:company/:id/:response', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not authorized' });
     }
 
-    const removeIndex = responses.responses.map((resp) => resp._id.toString()).indexOf(req.params.response);
+    const removeIndex = resp.responses.map((item) => item._id.toString())
+      .indexOf(req.params.response);
 
-    responses.responses.splice(removeIndex, 1);
+    resp.responses.splice(removeIndex, 1);
 
     await company.save();
     const otherResp = company.formTable.find((ask) => ask.id === req.params.id);
-    res.json(otherResp);
+    return res.json(otherResp);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -386,7 +386,7 @@ router.post(
     }
     try {
       const company = await Form.findById(req.params.company);
-      const form = company.formTable.find((form) => form.id === req.params.id);
+      const form = company.formTable.find((item) => item.id === req.params.id);
       const user = await User.findById(req.user.id).select('-password');
 
       const newCompanyPost = {
@@ -399,12 +399,12 @@ router.post(
       form.body = newCompanyPost;
 
       await company.save();
-      res.json(company);
+      return res.json(company);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 export default router;

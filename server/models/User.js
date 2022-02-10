@@ -1,5 +1,6 @@
-﻿import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
 
 const UserSchema = new Schema({
   name: {
@@ -37,8 +38,8 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.methods.summary = function () {
-  var summary = {
+UserSchema.methods.summary = () => {
+  const summary = {
     name: this.name,
     email: this.email,
     avatar: this.avatar,
@@ -55,4 +56,4 @@ UserSchema.methods.summary = function () {
 
 const User = mongoose.model('users', UserSchema);
 
-export default User
+export default User;

@@ -1,8 +1,8 @@
-﻿import Validator from 'validator';
+import Validator from 'validator';
 import isEmpty from './is-empty';
 
 export default function validateEducationImput(data) {
-  let errors = {};
+  const errors = {};
 
   data.school = !isEmpty(data.school) ? data.school : '';
   data.degree = !isEmpty(data.degree) ? data.degree : '';
@@ -29,4 +29,4 @@ export default function validateEducationImput(data) {
     errors,
     isValid: isEmpty(errors),
   };
-};
+}

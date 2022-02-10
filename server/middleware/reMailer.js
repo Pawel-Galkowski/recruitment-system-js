@@ -1,11 +1,11 @@
-import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-dotenv.config()
 
-const recoveryMailer = async(user, secret_key) => {
+dotenv.config();
+
+const recoveryMailer = async (user, secretKey) => {
   try {
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
         user: process.env.GMAIL_USER,
@@ -13,11 +13,11 @@ const recoveryMailer = async(user, secret_key) => {
       },
     });
 
-    const url = `http://localhost:3000/api/users/recovery/${secret_key}`;
+    const url = `http://localhost:3000/api/users/recovery/${secretKey}`;
     transporter.sendMail({
       to: user.email,
       subject: 'Recovery passowrd',
-      //html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`
+      // html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`
       html: `<div style="background-color: #F0F0F0; padding: 25px 0; font-size: 15px; font-family: Georgia; line-height: 25px;">
           <div style="max-width: 600px; min-width: 300px: width: auto; margin: 0 auto; text-align: center;">
               <p style="text-align: left;">
@@ -40,6 +40,6 @@ const recoveryMailer = async(user, secret_key) => {
   } catch (err) {
     return err;
   }
-}
+};
 
 export default recoveryMailer;

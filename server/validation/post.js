@@ -3,7 +3,7 @@ import isEmpty from './is-empty';
 
 export default {
   validatePostInput: (data) => {
-    let errors = {};
+    const errors = {};
 
     data.text = !isEmpty(data.text) ? data.text : '';
 

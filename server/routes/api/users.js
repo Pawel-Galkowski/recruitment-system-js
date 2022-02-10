@@ -1,14 +1,14 @@
-﻿import express from 'express';
+import express from 'express';
 import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { check, validationResult } from 'express-validator';
-import keys from '../../config/keys.js';
-import activationMailer from '../../middleware/mailer.js';
-import recoveryMailer from '../../middleware/reMailer.js';
-import validateLoginImput from '../../validation/login.js';
-import User from '../../models/User.js';
+import keys from '../../config/keys';
+import activationMailer from '../../middleware/mailer';
+import recoveryMailer from '../../middleware/reMailer';
+import validateLoginImput from '../../validation/login';
+import User from '../../models/User';
 
 const router = express.Router();
 
@@ -24,7 +24,9 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password, role } = req.body;
+    const {
+      name, email, password, role,
+    } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -38,7 +40,7 @@ router.post(
       });
 
       const salty = await bcrypt.genSalt(10);
-      const secret_key = await bcrypt.hash(email, salty);
+      const secretKey = await bcrypt.hash(email, salty);
       const confirmed = false;
       const salt = await bcrypt.genSalt(10);
       const confirmedKey = false;
@@ -53,22 +55,21 @@ router.post(
         role,
       });
 
-      const resEmail = activationMailer(user, secret_key);
-      var finChecker = await resEmail.then((value) => {
-        return value;
-      });
+      const resEmail = activationMailer(user, secretKey);
+      const finChecker = await resEmail.then((value) => value);
 
-      user.confirmedKey = await bcrypt.hash(user.id, secret_key);
+      user.confirmedKey = await bcrypt.hash(user.id, secretKey);
       user.password = await bcrypt.hash(password, salt);
 
-      if (finChecker == true) {
+      if (finChecker === true) {
         await user.save();
         return res.redirect('/login');
       }
     } catch (err) {
       res.status(500).send('Server error');
     }
-  }
+    return 'Registration finished';
+  },
 );
 
 // @route   Users api/users/login
@@ -77,7 +78,7 @@ router.post(
 
 router.post('/login', (req, res) => {
   const { errors } = validateLoginImput(req.body);
-  const email = req.body.email;
+  const { email } = req.body;
   const password = req.body.passowrd;
 
   User.findOne({ email }).then((user) => {
@@ -91,25 +92,26 @@ router.post('/login', (req, res) => {
         if (confirmed !== true) {
           errors.user = 'Please confirm email first';
           return res.status(404).json(errors);
-        } else {
-          const payload = {
-            id: user.id,
-            name: user.name,
-            avatar: user.avatar,
-          };
-
-          jwt.sign(payload, keys.secretOrKey, { expiresIn: 360000 }, (err, token) => {
-            res.json({
-              sucess: true,
-              token: token,
-            });
-          });
         }
+        const payload = {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+        };
+
+        jwt.sign(payload, keys.secretOrKey, { expiresIn: 360000 }, (err, token) => {
+          res.json({
+            sucess: true,
+            token,
+          });
+        });
       } else {
         errors.password = 'Password inccorect';
         return res.status(400).json(errors);
       }
+      return 'Process finished';
     });
+    return 'Log in process finished';
   });
 });
 
@@ -122,17 +124,17 @@ router.get(
       email: req.user.email,
       role: req.user.role,
     });
-  })
+  }),
 );
 
 router.post('/confirmation/:token', async (req, res) => {
   try {
-    const email = req.body.email;
-    const token = req.params.token;
-    let verifyuser = await User.findOne({ email });
-    const secret_token = await bcrypt.hash(verifyuser.id, verifyuser.confirmedKey);
-    let { user } = jwt.verify(token, secret_token);
-    if (verifyuser._id == user) {
+    const { email } = req.body;
+    const { token } = req.params;
+    const verifyuser = await User.findOne({ email });
+    const secretToken = await bcrypt.hash(verifyuser.id, verifyuser.confirmedKey);
+    const { user } = jwt.verify(token, secretToken);
+    if (verifyuser._id === user) {
       await verifyuser.updateOne({ confirmed: true });
       await verifyuser.updateOne({ $unset: { confirmedKey: 1 } });
     } else {
@@ -141,30 +143,28 @@ router.post('/confirmation/:token', async (req, res) => {
   } catch (err) {
     return res.status(400).json({ errors: [{ msg: 'Cannot confirm user' }] });
   }
+  return 'Confirmation process finished';
 });
 
 router.post('/recovery', async (req, res) => {
   try {
-    const email = req.body.email;
+    const { email } = req.body;
     const recoveryUser = await User.findOne({ email });
     const salty = await bcrypt.genSalt(10);
-    const secret_key = await bcrypt.hash(email, salty);
-    const newRecoveryToken = await bcrypt.hash(email, secret_key);
+    const secretToken = await bcrypt.hash(email, salty);
+    const newRecoveryToken = await bcrypt.hash(email, secretToken);
     const cleanToken = newRecoveryToken.replace(/[/]/g, '');
-    if (recoveryUser == '') {
+    if (recoveryUser === '') {
       return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
-    } else {
-      const resEmail = recoveryMailer(recoveryUser, cleanToken);
-      var finChecker = await resEmail.then((value) => {
-        return value;
-      });
-      if (finChecker == true) {
-        await recoveryUser.updateOne({
-          recoveryToken: cleanToken,
-        });
-      }
-      return true;
     }
+    const resEmail = recoveryMailer(recoveryUser, cleanToken);
+    const finChecker = await resEmail.then((value) => value);
+    if (finChecker) {
+      await recoveryUser.updateOne({
+        recoveryToken: cleanToken,
+      });
+    }
+    return true;
   } catch (err) {
     return res.status(400).json({ errors: [{ msg: 'Invalid  Email' }] });
   }
@@ -172,11 +172,11 @@ router.post('/recovery', async (req, res) => {
 
 router.post('/recovery/:token', async (req, res) => {
   try {
-    const email = req.body.email;
+    const { email } = req.body;
     const newPassword = req.body.password;
-    const token = req.params.token;
+    const { token } = req.params;
     const recoveryUser = await User.findOne({ email });
-    if (recoveryUser.recoveryToken == token) {
+    if (recoveryUser.recoveryToken === token) {
       const salt = await bcrypt.genSalt(10);
       const cryptPassword = await bcrypt.hash(newPassword, salt);
       await recoveryUser.updateOne({ password: cryptPassword });
@@ -187,6 +187,7 @@ router.post('/recovery/:token', async (req, res) => {
   } catch (err) {
     return res.status(400).json({ errors: [{ msg: 'Cannot update user' }] });
   }
+  return 'Recovery process finished';
 });
 
 export default router;
