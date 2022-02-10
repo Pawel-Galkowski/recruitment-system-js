@@ -1,5 +1,5 @@
-import axios from "axios";
-import { setAlert } from "./alert";
+import axios from 'axios';
+import setAlert from './alert';
 import {
   FORM_ERROR,
   GET_COMPANIES,
@@ -14,23 +14,23 @@ import {
   REMOVE_FORM,
   REMOVE_COMPANY,
   REMOVE_RESPONSE,
-} from "./types";
+} from './types';
 
 export const addCompany = (formData) => async (dispatch) => {
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
   try {
-    const res = await axios.post("/api/forms", formData, config);
+    const res = await axios.post('/api/forms', formData, config);
 
     dispatch({
       type: ADD_COMPANY,
       payload: res.data,
     });
 
-    dispatch(setAlert("Company Created", "success"));
+    dispatch(setAlert('Company Created', 'success'));
   } catch (err) {
     dispatch({
       type: FORM_ERROR,
@@ -41,7 +41,7 @@ export const addCompany = (formData) => async (dispatch) => {
 
 export const getCompanies = () => async (dispatch) => {
   try {
-    const res = await axios.get("/api/forms");
+    const res = await axios.get('/api/forms');
     dispatch({
       type: GET_COMPANIES,
       payload: res.data,
@@ -88,7 +88,7 @@ export const getCompanyForms = (company) => async (dispatch) => {
 export const addCompanyForm = (company, formData) => async (dispatch) => {
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
   try {
@@ -99,7 +99,7 @@ export const addCompanyForm = (company, formData) => async (dispatch) => {
       payload: res.data,
     });
 
-    dispatch(setAlert("Form Created", "success"));
+    dispatch(setAlert('Form Created', 'success'));
   } catch (err) {
     dispatch({
       type: FORM_ERROR,
@@ -131,7 +131,7 @@ export const removeForm = (company, id) => async (dispatch) => {
       type: REMOVE_FORM,
       payload: res.data,
     });
-    dispatch(setAlert("Form Removed", "success"));
+    dispatch(setAlert('Form Removed', 'success'));
   } catch (err) {
     window.location.reload(true);
     dispatch({
@@ -142,11 +142,11 @@ export const removeForm = (company, id) => async (dispatch) => {
 };
 
 export const addResponseToForm = (company, id, formData, fileData) => async (
-  dispatch
+  dispatch,
 ) => {
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
   try {
@@ -155,7 +155,7 @@ export const addResponseToForm = (company, id, formData, fileData) => async (
     const res = await axios.post(
       `/api/forms/res/${company}/${id}`,
       responses,
-      config
+      config,
     );
 
     dispatch({
@@ -163,7 +163,7 @@ export const addResponseToForm = (company, id, formData, fileData) => async (
       payload: res.data,
     });
 
-    dispatch(setAlert("Response send", "success"));
+    dispatch(setAlert('Response send', 'success'));
   } catch (err) {
     dispatch({
       type: FORM_ERROR,
@@ -220,7 +220,7 @@ export const getOneResponse = (company, id, res) => async (dispatch) => {
 export const removeResponse = (company, id, response) => async (dispatch) => {
   try {
     const res = await axios.delete(
-      `/api/forms/res/${company}/${id}/${response}`
+      `/api/forms/res/${company}/${id}/${response}`,
     );
 
     dispatch({
