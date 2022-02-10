@@ -1,8 +1,8 @@
-﻿import express from 'express';
+import express from 'express';
 import { check, validationResult } from 'express-validator';
-import auth from '../../middleware/auth.js';
-import Post from '../../models/Post.js';
-import User from '../../models/User.js';
+import auth from '../../middleware/auth';
+import Post from '../../models/Post';
+import User from '../../models/User';
 
 const router = express.Router();
 
@@ -27,10 +27,10 @@ router.post('/', [auth, [check('text', ' Text is required').not().isEmpty()]], a
 
     const post = await newPost.save();
 
-    res.json(post);
+    return res.json(post);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -60,13 +60,13 @@ router.get('/:id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Post not found' });
     }
 
-    res.json(post);
+    return res.json(post);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Post not found' });
     }
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -88,10 +88,10 @@ router.delete('/:id', auth, async (req, res) => {
 
     await post.remove();
 
-    res.json({ msg: 'Post removed' });
+    return res.json({ msg: 'Post removed' });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -112,10 +112,10 @@ router.put('/like/:id', auth, async (req, res) => {
 
     await post.save();
 
-    res.json(post.likes);
+    return res.json(post.likes);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -138,10 +138,10 @@ router.put('/unlike/:id', auth, async (req, res) => {
     post.likes.splice(removeIndex, 1);
     await post.save();
 
-    res.json(post);
+    return res.json(post);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -171,10 +171,10 @@ router.post('/comment/:id', [auth, [check('text', ' Text is required').not().isE
 
     await post.save();
 
-    res.json(post.comments);
+    return res.json(post.comments);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 
@@ -186,7 +186,7 @@ router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    const comment = post.comments.find((comment) => comment.id === req.params.comment_id);
+    const comment = post.comments.find((com) => com.id === req.params.comment_id);
 
     if (!comment) {
       return res.status(404).json({
@@ -199,14 +199,14 @@ router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
     }
 
     // @get remove index
-    const removeIndex = post.comments.map((comment) => comment.user.toString()).indexOf(req.user.id);
+    const removeIndex = post.comments.map((com) => com.user.toString()).indexOf(req.user.id);
 
     post.comments.splice(removeIndex, 1);
     await post.save();
-    res.json([{ msg: 'Comment deleted' }, post.comments]);
+    return res.json([{ msg: 'Comment deleted' }, post.comments]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    return res.status(500).send('Server Error');
   }
 });
 

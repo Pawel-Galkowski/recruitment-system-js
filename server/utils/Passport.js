@@ -1,24 +1,24 @@
-var JwtStrategy = require('passport-jwt').Strategy;
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var controllers = require('../controllers');
+import Passport from 'passport';
+import controllers from '../controllers';
 
-var opts = {};
+const { ExtractJwt, JwtStrategy } = Passport;
+
+const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.TOKEN_SECRET;
 
-module.exports = (passport) => {
+export default (passport) => {
   passport.use(
-    new JwtStrategy(opts, (jwt_payload, done) => {
+    new JwtStrategy(opts, (jwtPayload, done) => {
       controllers.user
-        .getById(jwt_payload.id, false)
+        .getById(jwtPayload.id, false)
         .then((user) => {
           if (!user) return done(null, false);
           return done(null, user);
         })
         .catch((err) => {
-          console.log('passport authentication Error: ' + err);
-          return;
+          console.log(`passport authentication Error: ${err}`);
         });
-    })
+    }),
   );
 };

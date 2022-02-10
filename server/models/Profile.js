@@ -1,5 +1,6 @@
-﻿import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
 
 const ProfileSchema = new Schema({
   user: {
@@ -119,4 +120,4 @@ const ProfileSchema = new Schema({
 
 const Profile = mongoose.model('profile', ProfileSchema);
 
-export default Profile
+export default Profile;

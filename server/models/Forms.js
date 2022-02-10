@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 const FormsSchema = new Schema({
   forms: [
@@ -19,7 +20,7 @@ const FormsSchema = new Schema({
         {
           user: {
             type: Schema.Types.ObjectId,
-            ref: `users`,
+            ref: 'users',
           },
           name: {
             type: String,
@@ -45,4 +46,6 @@ const FormsSchema = new Schema({
   ],
 });
 
-module.exports = Forms = mongoose.model('form', FormsSchema);
+const Forms = mongoose.model('form', FormsSchema);
+
+module.exports = Forms;

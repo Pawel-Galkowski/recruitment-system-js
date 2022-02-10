@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 const FormSchema = new Schema({
   company: {
@@ -17,7 +18,7 @@ const FormSchema = new Schema({
     {
       creator: {
         type: Schema.Types.ObjectId,
-        ref: `users`,
+        ref: 'users',
       },
       questions: [
         {
@@ -28,7 +29,7 @@ const FormSchema = new Schema({
         {
           user: {
             type: Schema.Types.ObjectId,
-            ref: `users`,
+            ref: 'users',
           },
           answer: {
             type: Object,
@@ -55,4 +56,4 @@ const FormSchema = new Schema({
 
 const Form = mongoose.model('form', FormSchema);
 
-export default Form
+export default Form;

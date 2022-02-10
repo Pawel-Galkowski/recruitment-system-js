@@ -1,8 +1,8 @@
-﻿import Validator from 'validator';
-import isEmpty from './is-empty.js';
+import Validator from 'validator';
+import isEmpty from './is-empty';
 
-const validateLoginImput = data => {
-  let errors = {};
+const validateLoginImput = (data) => {
+  const errors = {};
 
   data.email = !isEmpty(data.email) ? data.email : '';
   data.password = !isEmpty(data.password) ? data.password : '';
@@ -26,4 +26,4 @@ const validateLoginImput = data => {
   };
 };
 
-export default validateLoginImput 
+export default validateLoginImput;

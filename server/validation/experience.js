@@ -1,8 +1,8 @@
-﻿import Validator from 'validator';
+import Validator from 'validator';
 import isEmpty from './is-empty';
 
 export default function validateExperienceImput(data) {
-  let errors = {};
+  const errors = {};
 
   data.title = !isEmpty(data.title) ? data.title : '';
   data.company = !isEmpty(data.company) ? data.company : '';
@@ -22,4 +22,4 @@ export default function validateExperienceImput(data) {
     errors,
     isValid: isEmpty(errors),
   };
-};
+}

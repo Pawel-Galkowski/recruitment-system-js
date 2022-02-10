@@ -1,4 +1,4 @@
-﻿import Validator from 'validator';
+import Validator from 'validator';
 import isEmpty from './is-empty';
 
 export default function validateRegisterImput(data) {
@@ -33,4 +33,4 @@ export default function validateRegisterImput(data) {
     errors,
     isValid: isEmpty(errors),
   };
-};
+}

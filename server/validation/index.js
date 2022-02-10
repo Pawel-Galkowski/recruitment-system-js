@@ -1,11 +1,11 @@
-import education from './education.js';
-import experience from './experience.js';
-import isEmpty from './is-empty.js';
-import login from './login.js';
-import post from './post.js';
-import profile from './profile.js';
-import register from './register.js';
-import forms from './forms.js';
+import education from './education';
+import experience from './experience';
+import isEmpty from './is-empty';
+import login from './login';
+import post from './post';
+import profile from './profile';
+import register from './register';
+import forms from './form';
 
 export default {
   isEmpty,
