@@ -1,17 +1,18 @@
 import Express from 'express';
-import path from 'path';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import fileUpload from 'express-fileupload';
-import fs from 'fs';
-import users from './routes/api/users';
-import auth from './routes/api/auth';
-import profile from './routes/api/profile';
-import posts from './routes/api/posts';
-import forms from './routes/api/forms';
+import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'file-system';
+import {
+  Auth, Forms, Posts, Profile, Users,
+} from './routes/index.ts';
 import db from './config/keys';
 import './middleware/mailer';
 import './config/passport';
+
+dotenv.config();
 
 const app = Express();
 
@@ -22,16 +23,16 @@ app.use(fileUpload());
 mongoose
   .connect(db.mongoURI, db.options)
   .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.log(err));
+  .catch((err: any) => console.log(err));
 
 app.use(passport.initialize());
-app.use('/api/users', users);
-app.use('/api/auth', auth);
-app.use('/api/profile', profile);
-app.use('/api/posts', posts);
-app.use('/api/forms', forms);
+app.use('/api/users', Users);
+app.use('/api/auth', Auth);
+app.use('/api/profile', Profile);
+app.use('/api/posts', Posts);
+app.use('/api/forms', Forms);
 
-app.post('/uploads', (req, res) => {
+app.post('/uploads', (req: Express.Request, res: Express.Response) => {
   try {
     if (req.files === null) {
       return res.status(400).json({ msg: 'No file uploaded' });
@@ -44,7 +45,7 @@ app.post('/uploads', (req, res) => {
       fs.mkdirSync(url);
     }
 
-    file.mv(`${url + file.name}`, (err) => {
+    file.mv(`${url + file.name}`, (err: any) => {
       if (err) {
         console.error(err);
         return res.status(500).send(err);
@@ -61,7 +62,7 @@ app.post('/uploads', (req, res) => {
   return 'Process upload file finished';
 });
 
-app.post('/uploads/:company/:id', (req, res) => {
+app.post('/uploads/:company/:id', (req: Express.Request, res: Express.Response) => {
   try {
     if (req.files === null) {
       return res.status(400).json({ msg: 'No file uploaded' });
@@ -74,7 +75,7 @@ app.post('/uploads/:company/:id', (req, res) => {
       fs.mkdirSync(url);
     }
 
-    file.mv(`${url + file.name}`, (err) => {
+    file.mv(`${url + file.name}`, (err: any) => {
       if (err) {
         console.error(err);
         res.json({ msg: 'File with that name exist' });
@@ -96,10 +97,12 @@ app.post('/uploads/:company/:id', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   app.use(Express.static('client/build'));
 
-  app.get('*', (req, res) => {
+  app.get('*', (req: Express.Request, res: Express.Response) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
 }
+
+console.log('asdasd');
 
 const port = process.env.PORT || 4000;
 

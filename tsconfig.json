@@ -2,14 +2,20 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
+    "importHelpers": true,
+    "strictNullChecks": true,
     "moduleResolution": "node",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "jsx": "react",
     "module": "es6",
     "target": "es5",
     "skipLibCheck": true,
-    "types": []
+    "types": [
+      "node"
+    ]
   },
-  "files": ["server/server.ts"],
+  "files": ["./server/server.ts"],
   "exclude": [
     "node_modules",
     "./node_modules",
